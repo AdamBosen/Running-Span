@@ -49,6 +49,15 @@
 
 		let instructionScreen;
 		if(sequenceName != "Demo"){
+
+			var enterSubjectID = {
+				type: 'survey-text',
+				questions:[{prompt: "Please enter your participant ID", name: 'SubjectID'}],
+				button_label: 'Log in'
+			}
+
+			experimentTimeline.push(enterSubjectID);
+
 			var currentURL = window.location.href.split("?")[0];
 			var demoURL = currentURL + "?sequence=Demo";
 			instructionScreen = {
@@ -65,13 +74,20 @@
 					'<br>Try to remember as many numbers<br>as you can from the <i>end</i> of the list.',
 					'When the numbers stop, type in as many numbers<br>as you can remember from the <i>end</i> of the list in order,<br>ending with the last number in the list.',
 					'For example, if the list you saw was "8,4,5,1"<br>and you remembered the last two numbers, you would type in 51.<br>If you remembered three, you would type in 451.',
-					'Get ready!<br>Numbers will appear and disappear quickly.<br>Click Next to try a few practice trials.'
+					'<br>Numbers will appear and disappear quickly.<br>Click Next to try a few practice trials.'
 					],
 				show_clickable_nav: true
 			}
 		}
 
-		experimentTimeline.push(instructionScreen)
+		experimentTimeline.push(instructionScreen);
+
+		var waitForFirstClick = {
+				type: 'html-button-response',
+				stimulus:"<p>Get ready to remember numbers</p>" + '<p style = ' + trialNumberStyle + '>1 of ' + sequence.length + "</p>",
+				choices:['Click to see the first list of numbers']
+		}
+		experimentTimeline.push(waitForFirstClick); 
 
 		var trialIndex = 0;
 		for (trialIndex = 0; trialIndex < sequence.length; trialIndex++)
