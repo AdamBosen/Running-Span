@@ -5,19 +5,16 @@
 		<script src="jspsych-6.1/jspsych.js"></script>
 		<script src="jspsych-6.1/plugins/jspsych-survey-text.js"></script>
 		<script src="jspsych-6.1/plugins/jspsych-html-keyboard-response.js"></script>
+		<script src="jspsych-6.1/plugins/jspsych-html-button-response.js"></script>
 		<script src="jspsych-6.1/plugins/jspsych-instructions.js"></script>
+		<script src="jspsych-6.1/plugins/jspsych-survey-text.js"></script>
 		<link href="jspsych-6.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+		<link href="/css/Running.css" rel="stylesheet" type="text/css"></link>
 
 		<meta charset="UTF-8">
 	</head>
 	<body></body>
-	<script>
-
-		//Formatting for text shown at various parts of the experiment
-		const trialNumberStyle = '"text-align:center;font-size:24px;position:fixed; left:80vw; top: 70vh;transform: translate(-50%, -50%)"';
-		const experimentEndStyle = '"text-align:center;font-size:24px;position:fixed; left:50vw; top: 50vh;transform: translate(-50%, -50%)"';
-		
-
+	<script> 
 		//Timeline:
 		//  Choose experimental file (or pull name from URL, ?sequence='xx')
 		//  Load experimental sequence
@@ -62,7 +59,7 @@
 			var demoURL = currentURL + "?sequence=Demo";
 			instructionScreen = {
 				type: 'instructions',
-				pages: ['<h1><a href="' + demoURL + '" target="_blank">Click here for instructions and practice.</a></h1><br>Click Next when you are ready to begin.'],
+				pages: ['<h2><a href="' + demoURL + '" target="_blank">1. Click here for instructions and practice.</a><br>2. Click Next when you are ready to begin.</h2>'],
 				show_clickable_nav: true
 			}
 		} else {
@@ -84,7 +81,7 @@
 
 		var waitForFirstClick = {
 				type: 'html-button-response',
-				stimulus:"<p>Get ready to remember numbers</p>" + '<p style = ' + trialNumberStyle + '>1 of ' + sequence.length + "</p>",
+				stimulus:"<p>Get ready to remember numbers</p>" + '<p class="trialNumber">1 of ' + sequence.length + "</p>",
 				choices:['Click to see the first list of numbers']
 		}
 		experimentTimeline.push(waitForFirstClick); 
@@ -100,9 +97,9 @@
 			{
 				var showDigit = {
 					type: 'html-keyboard-response',
-					stimulus: '<p style="font-family:Segoe UI;font-size: 48px">' + digitList[digitIndex] + '</p>',
+					stimulus: '<p class="number">' + digitList[digitIndex] + '</p>',
 					choices: jsPsych.NO_KEYS,
-					prompt: '<p style = ' + trialNumberStyle + '>' + (trialIndex + 1) + " of " + sequence.length + "</p>",
+					prompt: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					trial_duration: 300,
 					response_ends_trial: false,
 				}
@@ -113,7 +110,7 @@
 					type: 'html-keyboard-response',
 					stimulus: "",
 					choices: jsPsych.NO_KEYS,
-					prompt: '<p style = ' + trialNumberStyle + '>' + (trialIndex + 1) + " of " + sequence.length + "</p>",
+					prompt: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					trial_duration: 200,
 					response_ends_trial: false,
 				}
@@ -124,7 +121,7 @@
 			{
 				var enterResponse = {
 					type: 'survey-text',
-					preamble: '<p style = ' + trialNumberStyle + '>' + (trialIndex + 1) + " of " + sequence.length + "</p>",
+					preamble: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					questions:[{prompt: "", name: 'Response'}], 
 					button_label:'Click or press enter to start the next list'
 				}
@@ -132,7 +129,7 @@
 			} else {
 				var lastResponse = {
 					type: 'survey-text',
-					preamble: '<p style = ' + trialNumberStyle + '>' + (trialIndex + 1) + " of " + sequence.length + "</p>",
+					preamble: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					questions:[{prompt: "", name: 'Response'}], 
 					button_label:'Click to end the experiment'
 				}
@@ -145,7 +142,7 @@
 			timeline: experimentTimeline,
 			preload: sequence,
 			on_finish: function() {
-				document.querySelector('body').innerHTML = '<p style = ' + experimentEndStyle + '>This block is finished.<br>You can close this window.</p>';
+				document.querySelector('body').innerHTML = '<p class="experimentEnd">This block is finished.<br>You can close this window.</p>';
 			}
 		});
 
