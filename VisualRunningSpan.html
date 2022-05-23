@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Visual Free Recall</title>
-		<script src="jspsych-6.1/jspsych.js"></script>
-		<script src="jspsych-6.1/plugins/jspsych-survey-text.js"></script>
-		<script src="jspsych-6.1/plugins/jspsych-html-keyboard-response.js"></script>
-		<script src="jspsych-6.1/plugins/jspsych-html-button-response.js"></script>
-		<script src="jspsych-6.1/plugins/jspsych-instructions.js"></script>
-		<script src="jspsych-6.1/plugins/jspsych-survey-text.js"></script>
-		<link href="jspsych-6.1/css/jspsych.css" rel="stylesheet" type="text/css"></link>
-		<link href="/css/Running.css" rel="stylesheet" type="text/css"></link>
+		<title>Visual Running Span</title>
+		<script src="jspsych-7.2.1-dist/jspsych.js"></script>
+		<script src="jspsych-7.2.1-dist/plugin-survey-text.js"></script>
+		<script src="jspsych-7.2.1-dist/plugin-html-keyboard-response.js"></script>
+		<script src="jspsych-7.2.1-dist/plugin-html-button-response.js"></script>
+		<script src="jspsych-7.2.1-dist/plugin-instructions.js"></script>
+		<script src="jspsych-7.2.1-dist/plugin-survey-text.js"></script>
+		<link href="jspsych-7.2.1-dist/jspsych.css" rel="stylesheet" type="text/css"></link>
+		<link href="css/Running.css" rel="stylesheet" type="text/css"></link>
 
 		<meta charset="UTF-8">
 	</head>
@@ -42,30 +42,36 @@
 		const sequence = sequenceText.trim().split('\n');
 
 		//Go through the file sequence and add an audio-keyboard-response object for each file
-		var experimentTimeline = [];
+		var timeline = [];
+
+		let jsPsych = initJsPsych({
+			on_finish: function() {
+				document.querySelector('body').innerHTML = '<p class="experimentEnd">This block is finished.<br>You can close this window.</p>';
+			}
+		});
 
 		let instructionScreen;
 		if(sequenceName != "Demo"){
 
 			var enterSubjectID = {
-				type: 'survey-text',
+				type: jsPsychSurveyText,
 				questions:[{prompt: "Please enter your participant ID", name: 'SubjectID'}],
 				button_label: 'Log in'
 			}
 
-			experimentTimeline.push(enterSubjectID);
+			timeline.push(enterSubjectID);
 
 			var currentURL = window.location.href.split("?")[0];
 			var demoURL = currentURL + "?sequence=Demo";
 			instructionScreen = {
-				type: 'instructions',
+				type: jsPsychInstructions,
 				pages: ['<h2><a href="' + demoURL + '" target="_blank">1. Click here for instructions and practice.</a><br>2. Click Next when you are ready to begin.</h2>'],
 				show_clickable_nav: true
 			}
 		} else {
 
 			instructionScreen = {
-				type: 'instructions',
+				type: jsPsychInstructions,
 				pages: [
 					'You will see a long list of numbers very quickly.<br>You will not know when the list is going to stop.<br>The list will be too long for you to remember all of the numbers.',
 					'<br>Try to remember as many numbers<br>as you can from the <i>end</i> of the list.',
@@ -77,14 +83,14 @@
 			}
 		}
 
-		experimentTimeline.push(instructionScreen);
+		timeline.push(instructionScreen);
 
 		var waitForFirstClick = {
-				type: 'html-button-response',
+				type: jsPsychHtmlButtonResponse,
 				stimulus:"<p>Get ready to remember numbers</p>" + '<p class="trialNumber">1 of ' + sequence.length + "</p>",
 				choices:['Click to see the first list of numbers']
 		}
-		experimentTimeline.push(waitForFirstClick); 
+		timeline.push(waitForFirstClick); 
 
 		var trialIndex = 0;
 		for (trialIndex = 0; trialIndex < sequence.length; trialIndex++)
@@ -96,55 +102,48 @@
 			for(digitIndex = 0; digitIndex < digitList.length; digitIndex++)
 			{
 				var showDigit = {
-					type: 'html-keyboard-response',
+					type: jsPsychHtmlKeyboardResponse,
 					stimulus: '<p class="number">' + digitList[digitIndex] + '</p>',
-					choices: jsPsych.NO_KEYS,
+					choices: "NO_KEYS",
 					prompt: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					trial_duration: 300,
 					response_ends_trial: false,
 				}
-				experimentTimeline.push(showDigit);
+				timeline.push(showDigit);
 
 				
 				var interStimulusInterval = {
-					type: 'html-keyboard-response',
+					type: jsPsychHtmlKeyboardResponse,
 					stimulus: "",
-					choices: jsPsych.NO_KEYS,
+					choices: "NO_KEYS",
 					prompt: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					trial_duration: 200,
 					response_ends_trial: false,
 				}
-				experimentTimeline.push(interStimulusInterval);
+				timeline.push(interStimulusInterval);
 			}
 
 			if(trialIndex < sequence.length-1)
 			{
 				var enterResponse = {
-					type: 'survey-text',
+					type: jsPsychSurveyText,
 					preamble: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					questions:[{prompt: "", name: 'Response'}], 
 					button_label:'Click or press enter to start the next list'
 				}
-				experimentTimeline.push(enterResponse);
+				timeline.push(enterResponse);
 			} else {
 				var lastResponse = {
-					type: 'survey-text',
+					type: jsPsychSurveyText,
 					preamble: '<p class="trialNumber">' + (trialIndex + 1) + " of " + sequence.length + "</p>",
 					questions:[{prompt: "", name: 'Response'}], 
 					button_label:'Click to end the experiment'
 				}
-				experimentTimeline.push(lastResponse);
+				timeline.push(lastResponse);
 			}
-		} 
+		}
 
-
-		jsPsych.init({
-			timeline: experimentTimeline,
-			preload: sequence,
-			on_finish: function() {
-				document.querySelector('body').innerHTML = '<p class="experimentEnd">This block is finished.<br>You can close this window.</p>';
-			}
-		});
+		jsPsych.run(timeline);
 
 	</script>
 </html>
