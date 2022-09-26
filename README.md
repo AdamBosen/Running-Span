@@ -1,7 +1,7 @@
 # Running-Span
-Website built in javascript using the jsPsych library to test memory in a running span task. A running example of the most recent version of this script can be found here: https://ewmt8oojqj.cognition.run/?sequence=Demo
+Website built in javascript using the jsPsych library to test memory in a running span task. A running example of the most recent version of this script can be found here: https://jatos.boystown.org/publix/jVa581wM7W6
 
-This script was developed in jsPsych 6.1, which can be downloaded here: https://github.com/jspsych/jsPsych/releases/tag/v6.1.0 . It probably works with newer versions of jsPsych, but I haven't tested it.
+This script was developed in jsPsych 7.2.1, which can be downloaded here: https://github.com/jspsych/jsPsych/releases/tag/jspsych%407.2.1 . It probably works with newer versions of jsPsych, but I haven't tested it.
 
 If you want to run this program locally you will need to run a local web server so the GET request for the sequence file is not blocked. I use the Web Server For Chrome app for debugging purposes, but you may want to do some research and decide what works best for you. When testing participants, we use a version of this program hosted on cognition.run
 
